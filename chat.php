@@ -14,26 +14,16 @@ $user_role = $_SESSION['user_role'];
 function deleteChat($chat_id)
 {
     global $conn;
-    $stmt = $conn->prepare("DELETE FROM chats WHERE id = ?");
-    $stmt->bind_param("i", $chat_id);
-    $stmt->execute();
-    $stmt->close();
+    $conn->query("DELETE FROM chats WHERE id = $chat_id");
 }
 
 function banUser($user_id)
 {
     global $conn;
     // Delete all chats by the user first to avoid foreign key constraint error
-    $stmt = $conn->prepare("DELETE FROM chats WHERE user_id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $stmt->close();
-
+    $conn->query("DELETE FROM chats WHERE user_id = $user_id");
     // Now delete the user
-    $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $stmt->close();
+    $conn->query("DELETE FROM users WHERE id = $user_id");
 }
 
 if (isset($_GET['logout'])) {
@@ -45,10 +35,7 @@ if (isset($_GET['logout'])) {
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message'])) {
     $message = $_POST['message'];
-    $stmt = $conn->prepare("INSERT INTO chats (message, user_id) VALUES (?, ?)");
-    $stmt->bind_param("si", $message, $user_id);
-    $stmt->execute();
-    $stmt->close();
+    $conn->query("INSERT INTO chats (message, user_id) VALUES ('$message', $user_id)");
     header('Location: chat.php');
     exit();
 }
@@ -158,6 +145,9 @@ $result = $conn->query($query);
     <div class="chat-container">
         <h2>Chat</h2>
         <a href="chat.php?logout=true" style="color: red; text-decoration: none; font-size: 0.9em;">Logout</a>
+        <?php if ($user_role == 'admin'): ?>
+            <a href="promote.php" style="color: blue; text-decoration: none; font-size: 0.9em;">Promote Users</a>
+        <?php endif; ?>
         <?php
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
