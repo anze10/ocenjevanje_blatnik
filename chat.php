@@ -1,5 +1,7 @@
 <?php
 require 'vendor/autoload.php';
+use DamBal\VercelBlob\VercelBlobClient;
+$client = new VercelBlobClient(getenv('BLOB_READ_WRITE_TOKEN'));
 session_start();
 require 'db_connection.php';
 if (!isset($_SESSION['user_id'])) {

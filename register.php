@@ -1,6 +1,8 @@
 <?php
 require 'vendor/autoload.php';
 require 'db_connection.php';
+use DamBal\VercelBlob\VercelBlobClient;
+$client = new VercelBlobClient(getenv('BLOB_READ_WRITE_TOKEN'));
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
     $username = $_POST['username'];
