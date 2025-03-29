@@ -2,7 +2,7 @@
     "name": "anzer/ocenjevanje_blatnik",
     "autoload": {
         "psr-4": {
-            "Anzer\\OcenjevanjeBlatnik\\": "src/"
+            "Anzer\\OcenjevanjeBlatnik\\": "api/"
         }
     },
     "authors": [
