@@ -29,7 +29,7 @@ function fetchAllUsers()
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
-// Check if the form is submitted
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userId = intval($_POST['user_id']);
     $action = $_POST['action'];

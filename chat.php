@@ -1,8 +1,6 @@
 <?php
 session_start();
 require 'db_connection.php';
-
-// Check if user is logged in and get user role
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
@@ -11,18 +9,20 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['user_role'];
 
+
 function deleteChat($chat_id)
 {
     global $conn;
+
     $conn->query("DELETE FROM chats WHERE id = $chat_id");
 }
 
 function banUser($user_id)
 {
     global $conn;
-    // Delete all chats by the user first to avoid foreign key constraint error
+
     $conn->query("DELETE FROM chats WHERE user_id = $user_id");
-    // Now delete the user
+
     $conn->query("DELETE FROM users WHERE id = $user_id");
 }
 
@@ -32,7 +32,7 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
-// Handle form submission
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message'])) {
     $message = $_POST['message'];
     $conn->query("INSERT INTO chats (message, user_id) VALUES ('$message', $user_id)");
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
 }
 
-// Fetch all chats from the database
+
 $query = "SELECT chats.id, chats.message, chats.user_id, users.username FROM chats JOIN users ON chats.user_id = users.id";
 $result = $conn->query($query);
 ?>

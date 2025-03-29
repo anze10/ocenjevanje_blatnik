@@ -1,41 +1,59 @@
 <?php
 session_start();
-$servername = "158.180.230.254:3306";
-$dbname = "ocvenjevanej_nsa";
-$dbusername = "username";
-$dbpassword = "Kaks123!@";
+require 'db_connection.php';
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-    die();
-}
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Check if the form is submitted
+$error = '';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-    // Check credentials
-    $stmt = $conn->prepare("SELECT id, role FROM users WHERE username = :username AND password = :password");
-    $stmt->bindValue(':username', $username);
-    $stmt->bindValue(':password', $password);
-    $stmt->execute();
+    // Debug output
+    echo "<script>console.log('Login attempt:', " . json_encode($username) . ");</script>";
 
-    if ($stmt->rowCount() > 0) {
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_role'] = $user['role'];
-        header('Location: chat.php');
-        exit();
-    } else {
-        echo "Invalid username or password.";
+    $stmt = $conn->prepare("SELECT id, role, password FROM users WHERE username = ?");
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
     }
+
+    $stmt->bind_param("s", $username);
+    if (!$stmt->execute()) {
+        die("Execute failed: " . $stmt->error);
+    }
+
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
+
+        echo "<script>console.log('Database record:', " . json_encode($user) . ");</script>";
+
+        if ($password === $user['password']) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_role'] = $user['role'];
+            header('Location: chat.php');
+            exit();
+        } else {
+
+            echo "<script>console.log('Password comparison failed');</script>";
+            $error = "Invalid password";
+        }
+    } else {
+
+        echo "<script>console.log('No user found');</script>";
+        $error = "Invalid username";
+    }
+
+    if (empty($error))
+        $error = "Invalid credentials";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -97,9 +115,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="login-container">
         <h2>Login</h2>
-        <?php if (isset($error)) {
-            echo "<p class='error-message'>$error</p>";
-        } ?>
+        <?php if (!empty($error)): ?>
+            <p class='error-message'><?= htmlspecialchars($error) ?></p>
+        <?php endif; ?>
         <form method="post" action="">
             <input type="text" id="username" name="username" placeholder="Username" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
