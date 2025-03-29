@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($password === $user['password']) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_role'] = $user['role'];
-            header('Location: chat.php');
+            header('Location: api/chat.php');
             exit();
         } else {
 
