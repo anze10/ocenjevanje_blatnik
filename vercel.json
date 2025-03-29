@@ -8,6 +8,10 @@
         {
             "src": "/(.*)",
             "dest": "/api/index.php"
+        },
+        {
+            "src": "/chat/(.*)",
+            "dest": "/api/chat.php"
         }
     ]
 }
