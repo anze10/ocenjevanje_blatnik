@@ -1,5 +1,5 @@
 <?php
-
+require 'vendor/autoload.php';
 require 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
