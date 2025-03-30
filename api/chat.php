@@ -2,10 +2,10 @@
 
 session_start();
 require 'db_connection.php';
-// if (!isset($_SESSION['user_id'])) {
-//     header('Location: index.php');
-//     exit();
-// }
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit();
+}
 
 $user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['user_role'];
