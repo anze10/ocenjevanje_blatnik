@@ -14,9 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
-    // Debug output
-    echo "<script>console.log('Login attempt:', " . json_encode($username) . ");</script>";
-
     $stmt = $conn->prepare("SELECT id, role, password FROM users WHERE username = ?");
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
@@ -32,22 +29,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
 
-
-        echo "<script>console.log('Database record:', " . json_encode($user) . ");</script>";
-
         if ($password === $user['password']) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_role'] = $user['role'];
             header('Location: chat.php');
             exit();
         } else {
-
-            echo "<script>console.log('Password comparison failed');</script>";
             $error = "Invalid password";
         }
     } else {
-
-        echo "<script>console.log('No user found');</script>";
         $error = "Invalid username";
     }
 
