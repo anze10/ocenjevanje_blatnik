@@ -6,6 +6,18 @@
     },
     "routes": [
         {
+            "src": "/register",
+            "dest": "/api/register.php"
+        },
+        {
+            "src": "/promote",
+            "dest": "/api/promote.php"
+        },
+        {
+            "src": "/chat",
+            "dest": "/api/chat.php"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
