@@ -18,7 +18,11 @@
             "dest": "/api/chat.php"
         },
         {
-            "src": "/(.*)",
+            "src": "/index",
+            "dest": "/api/index.php"
+        },
+        {
+            "src": "/",
             "dest": "/api/index.php"
         }
     ]
