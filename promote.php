@@ -3,15 +3,12 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// Check if the user is an admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     die("Access denied. Admins only.");
 }
 
 require 'db_connection.php';
 
-// Function to promote a user
 function promoteUser($userId, $role)
 {
     global $conn;
@@ -21,7 +18,7 @@ function promoteUser($userId, $role)
     return $stmt->execute();
 }
 
-// Fetch all users
+// Pada   wi fi pada žica  pada kvaliteta klica 
 function fetchAllUsers()
 {
     global $conn;
